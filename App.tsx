@@ -6,6 +6,7 @@ import {
 } from 'lucide-react';
 import type { Customer, Vehicle, ServiceOrder, InventoryItem, Staff, Checklist } from './types';
 import Login from './views/Login';
+import LandingPage from './views/LandingPage';
 import Dashboard from './views/Dashboard';
 import CustomersView from './views/Customers';
 import NewServiceOrder from './views/NewServiceOrder';
@@ -135,30 +136,26 @@ const App: React.FC = () => {
     setIsAuthenticated(false);
   };
 
-  if (!isAuthenticated) {
-    return <Login onLogin={() => setIsAuthenticated(true)} />;
-  }
-
   return (
     <AppContext.Provider value={{
       customers, vehicles, orders, inventory, team, checklists,
       addCustomer, deleteCustomer, addVehicle, deleteVehicle, addOrder, updateOrder, deleteOrder, addChecklist, addInventoryItem, updateInventory, deleteInventoryItem, addStaff, deleteStaff
     }}>
       <HashRouter>
-        <Layout onLogout={handleLogout}>
-          <Routes>
-            <Route path="/" element={<Dashboard />} />
-            <Route path="/terminal" element={<MechanicTerminal />} />
-            <Route path="/criar-nota" element={<NewServiceOrder />} />
-            <Route path="/notas" element={<InvoicesView />} />
-            <Route path="/clientes" element={<CustomersView />} />
-            <Route path="/veiculos" element={<VehiclesView />} />
-            <Route path="/estoque" element={<InventoryView />} />
-            <Route path="/financeiro" element={<FinancialView />} />
-            <Route path="/equipe" element={<TeamView />} />
-            <Route path="*" element={<Navigate to="/" />} />
-          </Routes>
-        </Layout>
+        <Routes>
+          <Route path="/" element={<LandingPage />} />
+          <Route path="/login" element={isAuthenticated ? <Navigate to="/dashboard" /> : <Login onLogin={() => setIsAuthenticated(true)} />} />
+          <Route path="/dashboard" element={isAuthenticated ? <Layout onLogout={handleLogout}><Dashboard /></Layout> : <Navigate to="/login" />} />
+          <Route path="/terminal" element={isAuthenticated ? <Layout onLogout={handleLogout}><MechanicTerminal /></Layout> : <Navigate to="/login" />} />
+          <Route path="/criar-nota" element={isAuthenticated ? <Layout onLogout={handleLogout}><NewServiceOrder /></Layout> : <Navigate to="/login" />} />
+          <Route path="/notas" element={isAuthenticated ? <Layout onLogout={handleLogout}><InvoicesView /></Layout> : <Navigate to="/login" />} />
+          <Route path="/clientes" element={isAuthenticated ? <Layout onLogout={handleLogout}><CustomersView /></Layout> : <Navigate to="/login" />} />
+          <Route path="/veiculos" element={isAuthenticated ? <Layout onLogout={handleLogout}><VehiclesView /></Layout> : <Navigate to="/login" />} />
+          <Route path="/estoque" element={isAuthenticated ? <Layout onLogout={handleLogout}><InventoryView /></Layout> : <Navigate to="/login" />} />
+          <Route path="/financeiro" element={isAuthenticated ? <Layout onLogout={handleLogout}><FinancialView /></Layout> : <Navigate to="/login" />} />
+          <Route path="/equipe" element={isAuthenticated ? <Layout onLogout={handleLogout}><TeamView /></Layout> : <Navigate to="/login" />} />
+          <Route path="*" element={<Navigate to="/" />} />
+        </Routes>
       </HashRouter>
     </AppContext.Provider>
   );
@@ -169,37 +166,37 @@ const Layout: React.FC<{ children: React.ReactNode, onLogout: () => void }> = ({
   const location = useLocation();
 
   const menuItems = [
-    { name: 'DASHBOARD', path: '/', icon: LayoutDashboard },
+    { name: 'PAINEL CENTRAL', path: '/dashboard', icon: LayoutDashboard },
     { name: 'TERMINAL MECÂNICO', path: '/terminal', icon: Wrench },
     { name: 'GERAR NOTA / OS', path: '/criar-nota', icon: FilePlus },
     { name: 'HISTÓRICO NOTAS', path: '/notas', icon: FileText },
     { name: 'FINANCEIRO', path: '/financeiro', icon: DollarSign },
     { name: 'CLIENTES', path: '/clientes', icon: Users },
     { name: 'VEÍCULOS', path: '/veiculos', icon: Car },
-    { name: 'ESTOQUE', path: '/estoque', icon: Package },
-    { name: 'EQUIPE', path: '/equipe', icon: UserPlus },
+    { name: 'ALMOXARIFADO', path: '/estoque', icon: Package },
+    { name: 'EQUIPE TÉCNICA', path: '/equipe', icon: UserPlus },
   ];
 
   return (
     <div className="min-h-screen flex bg-[#0a0a0a] text-zinc-100 font-sans selection:bg-[#cc1d1d]/30 overflow-hidden">
-      {/* Sidebar Elite Industrial */}
+      {/* Sidebar Elite */}
       <aside className={`
         fixed inset-y-0 left-0 w-64 bg-[#0d0d0d] border-r border-zinc-800/40 z-50 transform transition-transform duration-300 ease-in-out no-print
         md:relative md:translate-x-0
         ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'}
       `}>
         <div className="flex flex-col h-full">
-          <div className="p-8 flex items-center gap-4">
+          <div className="p-8 flex items-center gap-3 border-b border-zinc-800/20">
             <div className="w-10 h-10 bg-[#cc1d1d] rounded-lg flex items-center justify-center shadow-lg shadow-[#cc1d1d]/20">
               <Wrench className="text-white" size={20} />
             </div>
             <div>
               <h1 className="text-xl font-black text-white tracking-tighter italic uppercase leading-none">Kaen<span className="text-[#cc1d1d]">pro</span></h1>
-              <p className="text-[8px] text-zinc-600 font-black tracking-widest uppercase mt-0.5">Gestão de Oficina</p>
+              <p className="text-[8px] text-zinc-600 font-black tracking-widest uppercase mt-0.5">Gestão Industrial</p>
             </div>
           </div>
 
-          <nav className="flex-1 px-4 space-y-1 overflow-y-auto custom-scrollbar">
+          <nav className="flex-1 px-4 py-6 space-y-1.5 overflow-y-auto custom-scrollbar">
             {menuItems.map((item) => {
               const Icon = item.icon;
               const isActive = location.pathname === item.path;
@@ -209,7 +206,7 @@ const Layout: React.FC<{ children: React.ReactNode, onLogout: () => void }> = ({
                   to={item.path}
                   onClick={() => setIsSidebarOpen(false)}
                   className={`
-                    flex items-center gap-3 px-4 py-3.5 rounded-xl text-[10px] font-bold tracking-widest transition-all uppercase
+                    flex items-center gap-3 px-4 py-3.5 rounded-xl text-[10px] font-bold transition-all uppercase tracking-widest
                     ${isActive 
                       ? 'bg-[#cc1d1d] text-white shadow-xl shadow-[#cc1d1d]/10' 
                       : 'text-zinc-500 hover:bg-zinc-800/30 hover:text-zinc-100'}
@@ -223,21 +220,21 @@ const Layout: React.FC<{ children: React.ReactNode, onLogout: () => void }> = ({
           </nav>
 
           <div className="p-6 border-t border-zinc-800/40">
-             <button onClick={onLogout} className="flex items-center gap-3 px-4 py-3 w-full rounded-xl text-[10px] font-bold text-zinc-600 hover:text-red-500 transition-all uppercase tracking-widest">
-              <LogOut size={14} /> Encerrar Sessão
+             <button onClick={onLogout} className="flex items-center gap-3 px-4 py-3 w-full rounded-xl text-[10px] font-bold text-zinc-600 hover:text-red-500 transition-all uppercase tracking-widest group">
+              <LogOut size={14} className="group-hover:rotate-12 transition-transform" /> ENCERRAR SESSÃO
             </button>
           </div>
         </div>
       </aside>
 
-      {/* Backdrop Mobile */}
+      {/* Mobile Backdrop */}
       {isSidebarOpen && (
-        <div className="fixed inset-0 bg-black/80 z-40 md:hidden no-print" onClick={() => setIsSidebarOpen(false)} />
+        <div className="fixed inset-0 bg-black/90 z-40 md:hidden no-print" onClick={() => setIsSidebarOpen(false)} />
       )}
 
       {/* Content Area */}
       <div className="flex-1 flex flex-col h-screen overflow-hidden">
-        <header className="h-16 border-b border-zinc-800/20 flex items-center justify-between px-6 z-40 no-print bg-[#0a0a0a]/90 backdrop-blur-md">
+        <header className="h-16 border-b border-zinc-800/10 flex items-center justify-between px-6 z-40 no-print bg-[#0a0a0a]/80 backdrop-blur-xl">
           <button onClick={() => setIsSidebarOpen(true)} className="md:hidden p-2 text-zinc-400 hover:text-white transition-colors">
             <Menu size={24} />
           </button>
@@ -245,15 +242,15 @@ const Layout: React.FC<{ children: React.ReactNode, onLogout: () => void }> = ({
           <div className="flex items-center gap-4">
              <div className="text-right hidden sm:block">
                <p className="text-[10px] font-black text-white italic uppercase tracking-tighter">Administrador</p>
-               <p className="text-[8px] text-zinc-500 font-bold uppercase tracking-widest">Rafael | Sistema Ativo</p>
+               <p className="text-[8px] text-zinc-600 font-bold uppercase tracking-widest">RAFAEL | STATUS: ATIVO</p>
              </div>
-             <div className="w-9 h-9 rounded-xl bg-zinc-900 border border-zinc-800/50 flex items-center justify-center text-zinc-500">
+             <div className="w-9 h-9 rounded-xl bg-zinc-900 border border-zinc-800/50 flex items-center justify-center text-zinc-500 hover:text-[#cc1d1d] transition-colors cursor-pointer">
                <UserIcon size={16} />
              </div>
           </div>
         </header>
         <main className="flex-1 p-6 md:p-10 overflow-y-auto custom-scrollbar">
-          <div className="max-w-7xl mx-auto pb-20">
+          <div className="max-w-7xl mx-auto pb-10">
             {children}
           </div>
         </main>

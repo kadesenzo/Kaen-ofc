@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { Lock, Eye, EyeOff, Wrench } from 'lucide-react';
+import { Lock, Eye, EyeOff, Wrench, ShieldCheck } from 'lucide-react';
 
 interface LoginProps {
   onLogin: () => void;
@@ -27,24 +27,27 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
     <div className="min-h-screen bg-[#0a0a0a] flex items-center justify-center p-6 selection:bg-[#cc1d1d]/30">
       <div className="w-full max-w-sm space-y-12 animate-fade-in">
         <div className="text-center">
-          <div className="mx-auto w-16 h-16 bg-[#cc1d1d] rounded-2xl flex items-center justify-center shadow-2xl shadow-[#cc1d1d]/30 mb-8 transform -rotate-3 transition-transform hover:rotate-0">
+          <div className="mx-auto w-16 h-16 bg-[#cc1d1d] rounded-2xl flex items-center justify-center shadow-2xl shadow-[#cc1d1d]/30 mb-8 transform -rotate-6 transition-transform hover:rotate-0 duration-500">
             <Wrench className="text-white" size={32} />
           </div>
           <h1 className="text-4xl font-black text-white tracking-tighter leading-none uppercase italic">Kaen<span className="text-[#cc1d1d]">pro</span></h1>
-          <p className="text-[9px] text-zinc-600 font-bold tracking-[0.4em] uppercase mt-4">Internal Management Suite</p>
+          <p className="text-[9px] text-zinc-600 font-bold tracking-[0.5em] uppercase mt-4">Internal Management Suite</p>
         </div>
 
         <div className="bg-[#111111] border border-zinc-800/60 rounded-[2.5rem] p-10 shadow-2xl relative overflow-hidden">
           <div className="absolute top-0 left-0 w-full h-1 bg-[#cc1d1d]/40 shadow-[0_0_20px_rgba(204,29,29,0.3)]"></div>
           
           <div className="mb-10 text-center">
-            <h2 className="text-xl font-black text-white italic tracking-tighter uppercase">Autenticação</h2>
-            <p className="text-[9px] text-zinc-500 font-bold uppercase tracking-widest mt-1">Insira suas credenciais internas</p>
+            <div className="flex items-center justify-center gap-2 mb-2">
+               <ShieldCheck size={14} className="text-[#cc1d1d]" />
+               <h2 className="text-xl font-black text-white italic tracking-tighter uppercase">Autenticação</h2>
+            </div>
+            <p className="text-[9px] text-zinc-500 font-bold uppercase tracking-widest">Insira suas credenciais de acesso</p>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="space-y-2">
-              <label className="text-[9px] font-black text-zinc-700 uppercase tracking-widest ml-1">Usuário</label>
+              <label className="text-[9px] font-black text-zinc-700 uppercase tracking-widest ml-1">Usuário de Acesso</label>
               <input 
                 type="text"
                 value={username}
@@ -55,7 +58,7 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
             </div>
 
             <div className="space-y-2">
-              <label className="text-[9px] font-black text-zinc-700 uppercase tracking-widest ml-1">Senha</label>
+              <label className="text-[9px] font-black text-zinc-700 uppercase tracking-widest ml-1">Senha de Segurança</label>
               <div className="relative">
                 <input 
                   type={showPassword ? "text" : "password"}
@@ -78,13 +81,13 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
 
             <button 
               type="submit"
-              className="w-full bg-[#cc1d1d] hover:bg-[#b01818] text-white font-black py-5 rounded-2xl shadow-xl shadow-[#cc1d1d]/20 transform active:scale-[0.98] transition-all flex items-center justify-center gap-3 mt-4 text-[10px] tracking-widest uppercase"
+              className="w-full bg-[#cc1d1d] hover:bg-[#b01818] text-white font-black py-5 rounded-2xl shadow-xl shadow-[#cc1d1d]/20 transform active:scale-[0.98] transition-all flex items-center justify-center gap-3 mt-4 text-[11px] tracking-widest uppercase"
             >
-              LIBERAR ACESSO <Lock size={14} />
+              LIBERAR OPERACIONAL <Lock size={14} />
             </button>
           </form>
         </div>
-        <p className="text-center text-zinc-800 text-[9px] font-bold tracking-[0.2em] uppercase">© 2025 KAENPRO ELITE v2.5</p>
+        <p className="text-center text-zinc-800 text-[9px] font-black tracking-[0.3em] uppercase">© 2025 KAENPRO ELITE MECÂNICA</p>
       </div>
     </div>
   );
